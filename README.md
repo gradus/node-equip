@@ -1,6 +1,6 @@
 # equip
 
-** Equip connect middlewares to your flatiron stack. **
+**Equip connect middlewares to your flatiron stack.**
 
 ## Flatiron plugin example:
 
