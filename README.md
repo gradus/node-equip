@@ -5,6 +5,8 @@
 ## Flatiron plugin example:
 
 ```js
+var equip = require('equip');
+
 var flatiron = require('flatiron'),
     app = flatiron.app;
 
