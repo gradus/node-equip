@@ -2,7 +2,7 @@
   "author": "Joshua Holbrook <josh@nodejitsu.com> (http://jesusabdullah.github.com)",
   "name": "equip",
   "description": "Equip connect middlewares to your flatiron stack.",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "homepage": "https://github.com/jesusabdullah/node-equip",
   "repository": {
     "type": "git",
