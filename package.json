@@ -8,7 +8,7 @@
     "type": "git",
     "url": "git@github.com:jesusabdullah/node-equip.git"
   },
-  "main": "./index.js",
+  "main": "./lib/index.js",
   "engines": {
     "node": "~0.6.6"
   },
