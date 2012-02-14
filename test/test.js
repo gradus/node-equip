@@ -11,6 +11,15 @@ var middleware = function oilpan (req, res, next) {
   res.end('This request "fell through" the middleware stack!');
 }
 
+var middlewareFactory = function (opts) {
+  opts = opts || {};
+
+  return function oilpan (req, res, next) {
+    res.writeHead(opts.statusCode || 500, { 'content-type': 'text/plain' });
+    res.end('This request "fell through" the middleware stack!');
+  }
+}
+
 vows.describe('equip').addBatch({
   'When you equip a flatiron app with a middleware ': {
     'as an argument': {
@@ -98,6 +107,30 @@ vows.describe('equip').addBatch({
     },
     'works as expected': function (body) {
       assert.equal(body, 'This request "fell through" the middleware stack!'); 
+    }
+  }
+}).addBatch({
+  'When you equip a flatiron app with a middleware factory': {
+    topic: function () {
+      var cb = this.callback.bind(this);
+
+      var app = new flatiron.App;
+
+      app.use(flatiron.plugins.http);
+      app.use(equip.wrapFactory(middlewareFactory), {
+        statusCode: 200
+      });
+
+      app.start(9003, function (err) {
+        cb(err, app);
+      });
+    },
+    'The middleware should activate.': function (app) {
+      request('http://localhost:9003', function (err, response, body) {
+        assert.equal(response.statusCode, 200);
+
+        assert.equal(body, 'This request "fell through" the middleware stack!');
+      });
     }
   }
 }).export(module);
