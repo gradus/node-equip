@@ -34,7 +34,7 @@ app.use(equip(middleware));
 app.router.get('*', equip(middleware));
 ```
 
-## Or, use it like a regular middleware:
+## Use it like a regular middleware:
 
 ```js
 
@@ -44,6 +44,18 @@ var express = require('express');
 express.use(equip(middleware));
 ```
 
+## Or, wrap a [function that returns a middleware]:
+
+```js
+
+var wrapped = equip.wrapFactory(createMiddleware);
+
+express.use(createMiddleware(opts));
+app.use(createMiddleware, opts);
+app.router.get('*', createMiddleware);
+
+```
+
 # Install:
 
     npm install equip
@@ -51,32 +63,7 @@ express.use(equip(middleware));
 # Tests
 
 ```bash
-% npm test
-npm info it worked if it ends with ok
-npm info using npm@1.1.0-3
-npm info using node@v0.6.6
-npm info pretest equip@0.0.0
-npm info test equip@0.0.0
-
-> equip@0.0.0 test /home/josh/dev/equip
-> vows --spec ./test/test.js
-
-
-♢ equip
-
-  When using as a regular middleware
-    ✓ works as expected
-  When you equip a flatiron app with a middleware as an argument
-    ✓ The middleware should activate.
-  When you equip a flatiron app with a middleware as a wrapper
-    ✓ The middleware should activate.
-  When you equip a flatiron app with a middleware as a route /foo
-    ✓ The middleware should activate on /foo
- 
-✓ OK » 4 honored (0.053s)
-
-npm info posttest equip@0.0.0
-npm info ok
+$ npm test
 ```
 
 # License:
