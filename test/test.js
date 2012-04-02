@@ -1,136 +1,57 @@
 var vows = require('vows'),
-    assert = require('assert'),
-    request = require('request');
+    colors = require('colors');
 
-var equip = require('../lib');
+var equip = require('../lib'),
+    oilpan = require('./oilpan'),
+    server = require('./server'),
+    client = require('./client');
 
-var flatiron = require('flatiron');
-
-var middleware = function oilpan (req, res, next) {
-  res.writeHead(500, { 'content-type': 'text/plain' });
-  res.end('This request "fell through" the middleware stack!');
-}
-
-var middlewareFactory = function (opts) {
-  opts = opts || {};
-
-  return function oilpan (req, res, next) {
-    res.writeHead(opts.statusCode || 500, { 'content-type': 'text/plain' });
-    res.end('This request "fell through" the middleware stack!');
-  }
-}
-
-vows.describe('equip').addBatch({
-  'When you equip a flatiron app with a middleware ': {
-    'as an argument': {
-      topic: function () {
-        var cb = this.callback.bind(this);
-
-        var app = new flatiron.App;
-
-        app.use(flatiron.plugins.http);
-        app.use(equip, middleware);
-
-        app.start(9000, function (err) {
-          cb(err, app);
-        });
-      },
-      'The middleware should activate.': function (app) {
-        request('http://localhost:9000', function (err, response, body) {
-          assert.equal(response.statusCode, 500);
-
-          assert.equal(body, 'This request "fell through" the middleware stack!');
-        });
-      }
+vows.describe([
+  'Welcome to:',
+  '⚡ '.yellow + 'AN EXHAUSTIVE DEMO OF EQUIP\'S CAPABILITIES'.rainbow,
+  '⚡ '.yellow + 'which doubles as the tests.',
+  '',
+  '  \033[22m> var equipped, equipable;\033[1m'
+].join('\n')).addBatch({
+  '  >\n  > equipped = equip.middleware(oilpan.middleware);': {
+    '\n  > express.use(equipped);\n  >': {
+      topic: server(function (app) {
+        app.http.before.push(equip.middleware(oilpan.middleware));
+      }, { port: 9000 }),
+      'Equipped middlewares work as middleware!': client('http://localhost:9000')
     },
-    'as a wrapper': {
-      topic: function () {
-        var cb = this.callback.bind(this);
-
-        var app = new flatiron.App;
-
-        app.use(flatiron.plugins.http);
-        app.use(equip(middleware));
-
-        app.start(9001, function (err) {
-          cb(err, app);
-        });
-      },
-      'The middleware should activate.': function (app) {
-        request('http://localhost:9001', function (err, response, body) {
-          assert.equal(response.statusCode, 500);
-
-          assert.equal(body, 'This request "fell through" the middleware stack!');
-        });
-      }
+    '\n  > app.router.get(\'/foo\', equipped);\n  >': {
+      topic: server(function (app) {
+        app.router.get('/foo', equip.middleware(oilpan.middleware));
+      }, { port: 9001 }),
+      'But look! They also work as flatiron route handlers...': client('http://localhost:9001/foo')
     },
-    'as a route /foo': {
-      topic: function () {
-        var cb = this.callback.bind(this);
-
-        var app = new flatiron.App;
-
-        app.use(flatiron.plugins.http);
-        app.router.on('/foo', equip(middleware));
-
-        app.start(9002, function (err) {
-          cb(err, app);
-        });
-      },
-      'The middleware should activate on /foo': function (app) {
-        request('http://localhost:9002/foo', function (err, response, body) {
-          assert.equal(response.statusCode, 500);
-
-          assert.equal(body, 'This request "fell through" the middleware stack!');
-        });
-      }
-    },
-  },
-  'When using as a regular middleware': {
-    topic: function () {
-      var req = {},
-          res = {},
-          topic = this;
-
-      res.end = function () {
-        topic.callback.apply(topic,
-          [null].concat(Array.prototype.slice.call(arguments))
-        );
-      };
-
-      // NoOp for now.
-      res.writeHead = function () {};
-
-      var equipped = equip(middleware);
-
-      equipped(req, res, function () {});
-    },
-    'works as expected': function (body) {
-      assert.equal(body, 'This request "fell through" the middleware stack!'); 
+    '\n  > app.use(equipped);\n  >': {
+      topic: server(function (app) {
+        app.use(equip.middleware(oilpan.middleware));
+      }, { port: 9002 }),
+      '...and as a broadway plugin!': client('http://localhost:9002')
     }
   }
 }).addBatch({
-  'When you equip a flatiron app with a middleware factory': {
-    topic: function () {
-      var cb = this.callback.bind(this);
-
-      var app = new flatiron.App;
-
-      app.use(flatiron.plugins.http);
-      app.use(equip.wrapFactory(middlewareFactory), {
-        statusCode: 200
-      });
-
-      app.start(9003, function (err) {
-        cb(err, app);
-      });
+  '  >\n  > equipable = equip.config(oilpan.config);': {
+    '\n  > express.use(equipable({}));\n  >': {
+      topic: server(function (app) {
+        app.http.before.push(equip.config(oilpan.config)({}));
+      }, { port: 9003 }),
+      'We can also wrap middleware-returning functions that work with express,': client('http://localhost:9003')
     },
-    'The middleware should activate.': function (app) {
-      request('http://localhost:9003', function (err, response, body) {
-        assert.equal(response.statusCode, 200);
-
-        assert.equal(body, 'This request "fell through" the middleware stack!');
-      });
+    '\n  > app.router.get(\'/foo\', equipable({}));\n  >': {
+      topic: server(function (app) {
+        app.router.get('/foo', equip.config(oilpan.config)({}));
+      }, { port: 9004 }),
+      '*and* also with flatiron route handlers...': client('http://localhost:9004/foo')
+    },
+    '\n  > app.use(equippable, {});\n  >': {
+      topic: server(function (app) {
+        app.use(equip.config(oilpan.config), {});
+      }, { port: 9005 }),
+      '...and as a flatiron plugin!': client('http://localhost:9005')
     }
   }
 }).export(module);
