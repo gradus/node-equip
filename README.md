@@ -10,50 +10,76 @@ var equip = require('equip');
 var flatiron = require('flatiron'),
     app = flatiron.app;
 
-var middleware = function oilpan (req, res, next) {
-  res.writeHead(500, { 'content-type': 'text/plain' });
-  res.end('This request "fell through" the middleware stack!');
-}
+var hello = equip.configurable(function (world) {
+  return function (req, res, next) {
+    res.writeHead(200, { 'content-type': 'text/plain' });
+    res.end('Hello %s!', world);
+  }
+});
 
 app.use(flatiron.plugins.http);
-app.use(equip, middleware);
+app.use(hello, 'world');
 
 app.start(8080);
 ```
 
-## Alternate use with flatiron:
+## Install:
+
+    npm install equip
+
+## API:
+
+### `equip.middleware`
+
+Wrap middlewares for use with flatiron:
 
 ```js
-app.use(equip(middleware));
+var equipped = equip.middleware(someMiddleware);
 ```
 
-## Alternate use with director:
+#### Flatiron plugin:
 
 ```js
-
-app.router.get('*', equip(middleware));
+flatironApp.use(equipped);
 ```
 
-## Use it like a regular middleware:
+## Flatiron route handler:
 
 ```js
 
-var express = require('express');
-
-// Still works.
-express.use(equip(middleware));
+flatironApp.router.get('*', equipped);
 ```
 
-## Or, wrap a [function that returns a middleware]:
+## Regular middleware
+
+```js
+expressApp.use(equipped);
+```
+
+## `equip.configurable`
+
+You can also wrap *functions that return middlewares*, here called a "configurable":
+
+    var equipable = equip.configurable(someConfigurable);
+
+
+#### Flatiron plugin:
+
+```js
+flatironApp.use(equipable, options);
+```
+
+## Flatiron route handler:
 
 ```js
 
-var wrapped = equip.wrapFactory(createMiddleware);
+flatironApp.router.get('*', equipable(options));
+```
 
-express.use(createMiddleware(opts));
-app.use(createMiddleware, opts);
-app.router.get('*', createMiddleware);
+## Regular middleware
 
+```js
+expressApp.use(equipable(options));
 ```
 
 # Install:
