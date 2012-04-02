@@ -1,6 +1,7 @@
 # equip
 
 **Equip connect middlewares to your flatiron stack.**
+[![Build Status](https://secure.travis-ci.org/jesusabdullah/node-equip.png?branch=master)](http://travis-ci.org/jesusabdullah/node-equip)
 
 ## Flatiron plugin example:
 
