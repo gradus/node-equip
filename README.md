@@ -44,20 +44,20 @@ var equipped = equip.middleware(someMiddleware);
 flatironApp.use(equipped);
 ```
 
-## Flatiron route handler:
+#### Flatiron route handler:
 
 ```js
 
 flatironApp.router.get('*', equipped);
 ```
 
-## Regular middleware
+#### Regular middleware
 
 ```js
 expressApp.use(equipped);
 ```
 
-## `equip.configurable`
+### `equip.configurable`
 
 You can also wrap *functions that return middlewares*, here called a "configurable":
 
@@ -70,22 +70,18 @@ You can also wrap *functions that return middlewares*, here called a "configurab
 flatironApp.use(equipable, options);
 ```
 
-## Flatiron route handler:
+#### Flatiron route handler:
 
 ```js
 
 flatironApp.router.get('*', equipable(options));
 ```
 
-## Regular middleware
+#### Regular middleware
 
 ```js
 expressApp.use(equipable(options));
 ```
-
-# Install:
-
-    npm install equip
 
 # Tests
 
