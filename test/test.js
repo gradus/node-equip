@@ -33,22 +33,22 @@ vows.describe([
     }
   }
 }).addBatch({
-  '  >\n  > equipable = equip.config(oilpan.config);': {
+  '  >\n  > equipable = equip.configurable(oilpan.configurable);': {
     '\n  > express.use(equipable({}));\n  >': {
       topic: server(function (app) {
-        app.http.before.push(equip.config(oilpan.config)({}));
+        app.http.before.push(equip.configurable(oilpan.configurable)({}));
       }, { port: 9003 }),
       'We can also wrap middleware-returning functions that work with express,': client('http://localhost:9003')
     },
     '\n  > app.router.get(\'/foo\', equipable({}));\n  >': {
       topic: server(function (app) {
-        app.router.get('/foo', equip.config(oilpan.config)({}));
+        app.router.get('/foo', equip.configurable(oilpan.config)({}));
       }, { port: 9004 }),
       '*and* also with flatiron route handlers...': client('http://localhost:9004/foo')
     },
     '\n  > app.use(equippable, {});\n  >': {
       topic: server(function (app) {
-        app.use(equip.config(oilpan.config), {});
+        app.use(equip.configurable(oilpan.config), {});
       }, { port: 9005 }),
       '...and as a flatiron plugin!': client('http://localhost:9005')
     }

@@ -4,6 +4,6 @@ function oilpan (req, res, next) {
 }
 
 exports.middleware = oilpan;
-exports.config = function () {
+exports.configurable = function () {
   return oilpan;
 }
