@@ -1,5 +1,4 @@
-var flatiron = require('flatiron'),
-    colors = require('colors');
+var flatiron = require('flatiron');
 
 module.exports = function (attach, opts) {
   return function topic() {

@@ -1,5 +1,4 @@
-var vows = require('vows'),
-    colors = require('colors');
+var vows = require('vows');
 
 var equip = require('../lib'),
     oilpan = require('./oilpan'),
@@ -8,8 +7,8 @@ var equip = require('../lib'),
 
 vows.describe([
   'Welcome to:',
-  '⚡ '.yellow + 'AN EXHAUSTIVE DEMO OF EQUIP\'S CAPABILITIES'.rainbow,
-  '⚡ '.yellow + 'which doubles as the tests.',
+  '⚡ AN EXHAUSTIVE DEMO OF EQUIP\'S CAPABILITIES',
+  '⚡ (which doubles as the tests.)',
   '',
   '  \033[22m> var equipped, equipable;\033[1m'
 ].join('\n')).addBatch({
